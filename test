@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <title>我的个人博客</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="一个简洁、快速、可扩展的个人博客模板" />
+  <style>
+    :root {
+      --color-bg: #ffffff;
+      --color-bg-soft: #f5f7fa;
+      --color-border: #e2e8f0;
+      --color-text: #1f2933;
+      --color-text-light: #4b5563;
+      --color-accent: #2563eb;
+      --color-accent-hover: #1d4ed8;
+      --color-code-bg: #f3f4f6;
+      --radius-sm: 4px;
+      --radius: 8px;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,.06);
+      --shadow: 0 2px 6px rgba(0,0,0,.08);
+      --transition: .25s cubic-bezier(.4,0,.2,1);
+    }
+    html[data-theme="dark"] {
+      --color-bg: #0f141b;
+      --color-bg-soft: #1b2430;
+      --color-border: #2a3a4b;
+      --color-text: #e5edf5;
+      --color-text-light: #94a3b8;
+      --color-accent: #3b82f6;
+      --color-accent-hover: #1d4ed8;
+      --color-code-bg: #1e293b;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+    a {
+      color: var(--color-accent);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+    a:hover {
+      color: var(--color-accent-hover);
+    }
+    header {
+      position: sticky;
+      top: 0;
+      backdrop-filter: saturate(180%) blur(14px);
+      background: rgba(255,255,255,0.75);
+      border-bottom: 1px solid var(--color-border);
+      z-index: 50;
+      transition: background var(--transition), border-color var(--transition);
+    }
+    html[data-theme="dark"] header {
+      background: rgba(15,20,27,0.82);
+    }
+    .topbar {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: .75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+    .brand {
+      font-weight: 600;
+      font-size: 1.15rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      letter-spacing: .5px;
+    }
+    nav {
+      margin-left: auto;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    nav a {
+      padding: .4rem .85rem;
+      border-radius: var(--radius-sm);
+      font-size: .9rem;
+      font-weight: 500;
+      color: var(--color-text-light);
+    }
+    nav a.active,
+    nav a:hover {
+      background: var(--color-bg-soft);
+      color: var(--color-text);
+    }
+    html[data-theme="dark"] nav a:hover,
+    html[data-theme="dark"] nav a.active {
+      background: #243141;
+    }
+    .theme-toggle {
+      cursor: pointer;
+      border: 1px solid var(--color-border);
+      background: var(--color-bg-soft);
+      color: var(--color-text-light);
+      padding: .45rem .8rem;
+      border-radius: var(--radius-sm);
+      font-size: .75rem;
+      letter-spacing: .5px;
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      transition: background var(--transition), color var(--transition), border-color var(--transition);
+    }
+    .theme-toggle:hover {
+      color: var(--color-text);
+    }
+    main {
+      max-width: 1180px;
+      margin: 1.75rem auto 3.5rem;
+      padding: 0 1.25rem;
+      display: grid;
+      grid-template-columns: minmax(0,1fr) 290px;
+      gap: 2.2rem;
+    }
+    @media (max-width: 960px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        order: -1;
+      }
+    }
+    .search-bar {
+      display: flex;
+      gap: .75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+      align-items: center;
+    }
+    .search-bar input {
+      flex: 1;
+      min-width: 240px;
+      padding: .65rem .85rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-border);
+      background: var(--color-bg-soft);
+      color: var(--color-text);
+      font-size: .9rem;
+      outline: none;
+      transition: border-color var(--transition), background var(--transition);
+    }
+    .search-bar input:focus {
+      border-color: var(--color-accent);
+      background: var(--color-bg);
+    }
+    .tags-filter {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+    }
+    .tag-chip {
+      font-size: .7rem;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      padding: .4rem .65rem;
+      background: var(--color-bg-soft);
+      color: var(--color-text-light);
+      border: 1px solid var(--color-border);
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition), border-color var(--transition);
+      user-select: none;
+    }
+    .tag-chip.active,
+    .tag-chip:hover {
+      background: var(--color-accent);
+      color: #fff;
+      border-color: var(--color-accent);
+    }
+    .posts {
+      display: grid;
+      gap: 1.25rem;
+    }
+    .post-card {
+      background: var(--color-bg-soft);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 1.15rem 1.15rem 1.05rem;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: .65rem;
+      transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition), background var(--transition);
+    }
+    .post-card:hover {
+      border-color: var(--color-accent);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+    .post-date {
+      font-size: .65rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      color: var(--color-text-light);
+      display: flex;
+      gap: .5rem;
+      align-items: center;
+    }
+    .post-card h2 {
+      font-size: 1.15rem;
+      margin: 0;
+      line-height: 1.3;
+    }
+    .post-excerpt {
+      font-size: .85rem;
+      color: var(--color-text-light);
+      margin: 0;
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .post-tags {
+      display: flex;
+      gap: .4rem;
+      flex-wrap: wrap;
+      margin-top: .25rem;
+    }
+    .post-tag {
+      font-size: .6rem;
+      padding: .25rem .5rem;
+      border-radius: 3px;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      letter-spacing: .5px;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+    html[data-theme="dark"] .post-tag {
+      background: #253040;
+      border-color: #2f4355;
+    }
+    .read-more {
+      align-self: flex-start;
+      margin-top: .25rem;
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .6px;
+      padding: .45rem .85rem;
+      background: var(--color-accent);
+      color: #fff;
+      border-radius: 4px;
+      display: inline-flex;
+      gap: .35rem;
+      align-items: center;
+      transition: background var(--transition), transform var(--transition);
+    }
+    .read-more:hover {
+      background: var(--color-accent-hover);
+      transform: translateY(-1px);
+    }
+    .empty {
+      padding: 2rem;
+      text-align: center;
+      font-size: .9rem;
+      color: var(--color-text-light);
+      border: 2px dashed var(--color-border);
+      border-radius: var(--radius);
+      background: var(--color-bg-soft);
+    }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: .4rem;
+      flex-wrap: wrap;
+      margin-top: 1.25rem;
+    }
+    .pagination button {
+      border: 1px solid var(--color-border);
+      background: var(--color-bg-soft);
+      color: var(--color-text-light);
+      padding: .45rem .75rem;
+      min-width: 38px;
+      border-radius: var(--radius-sm);
+      font-size: .75rem;
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition), border-color var(--transition), transform var(--transition);
+    }
+    .pagination button:hover {
+      color: var(--color-text);
+    }
+    .pagination button.active {
+      background: var(--color-accent);
+      color: #fff;
+      border-color: var(--color-accent);
+      font-weight: 600;
+    }
+    .pagination button:disabled {
+      opacity: .35;
+      cursor: not-allowed;
+    }
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      height: max-content;
+      position: sticky;
+      top: 74px;
+    }
+    .card {
+      background: var(--color-bg-soft);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 1rem 1.05rem 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: .65rem;
+      box-shadow: var(--shadow-sm);
+      transition: background var(--transition), border-color var(--transition);
+    }
+    .card h3 {
+      margin: 0;
+      font-size: .9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+      color: var(--color-text-light);
+    }
+    .about p, .card p {
+      margin: 0;
+      font-size: .75rem;
+      line-height: 1.5;
+      color: var(--color-text-light);
+    }
+    .tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+    .tag-cloud a {
+      font-size: .65rem;
+      padding: .35rem .55rem;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      color: var(--color-text-light);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      transition: background var(--transition), color var(--transition), border-color var(--transition);
+    }
+    .tag-cloud a:hover {
+      background: var(--color-accent);
+      color: #fff;
+      border-color: var(--color-accent);
+    }
+    footer {
+      border-top: 1px solid var(--color-border);
+      padding: 2.5rem 1.25rem 3.5rem;
+      background: var(--color-bg-soft);
+      margin-top: 3rem;
+    }
+    footer .inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: grid;
+      gap: 2rem;
+      grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
+    }
+    footer h4 {
+      margin: 0 0 .75rem;
+      font-size: .85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--color-text-light);
+    }
+    footer ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: .55rem;
+    }
+    footer li a {
+      font-size: .75rem;
+      color: var(--color-text-light);
+    }
+    footer li a:hover {
+      color: var(--color-text);
+    }
+    .copyright {
+      text-align: center;
+      margin-top: 2.5rem;
+      font-size: .65rem;
+      color: var(--color-text-light);
+      letter-spacing: .5px;
+    }
+    /* 文章阅读 Overlay */
+    .article-overlay {
+      position: fixed;
+      inset: 0;
+      backdrop-filter: blur(16px);
+      background: rgba(15,20,27,.82);
+      display: none;
+      z-index: 200;
+      overflow-y: auto;
+      padding: 3.5rem 1rem 4rem;
+    }
+    html[data-theme="light"] .article-overlay {
+      background: rgba(255,255,255,.92);
+    }
+    .article-container {
+      max-width: 820px;
+      margin: 0 auto;
+      background: var(--color-bg);
+      padding: 2.25rem 2rem 2.75rem;
+      border-radius: 18px;
+      border: 1px solid var(--color-border);
+      box-shadow: 0 4px 32px -8px rgba(0,0,0,.25);
+      position: relative;
+      animation: pop .45s var(--transition);
+    }
+    @media (max-width: 620px) {
+      .article-container {
+        padding: 1.6rem 1.2rem 2.1rem;
+        border-radius: 14px;
+      }
+    }
+    @keyframes pop {
+      0% { opacity: 0; transform: translateY(16px) scale(.98); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .close-article {
+      position: absolute;
+      top: .85rem;
+      right: .85rem;
+      background: var(--color-bg-soft);
+      border: 1px solid var(--color-border);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: 1.15rem;
+      color: var(--color-text-light);
+      transition: background var(--transition), color var(--transition), transform var(--transition);
+    }
+    .close-article:hover {
+      color: var(--color-text);
+      transform: rotate(90deg);
+    }
+    .article-container h1 {
+      margin-top: 0;
+      font-size: 1.85rem;
+      line-height: 1.25;
+    }
+    .article-meta {
+      font-size: .7rem;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      color: var(--color-text-light);
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .article-content p {
+      margin: 1rem 0;
+      font-size: .95rem;
+      line-height: 1.75;
+    }
+    .article-content pre {
+      background: var(--color-code-bg);
+      padding: 1rem;
+      border-radius: 10px;
+      overflow: auto;
+      font-size: .75rem;
+      line-height: 1.5;
+      border: 1px solid var(--color-border);
+    }
+    .article-content code {
+      background: var(--color-code-bg);
+      padding: .15rem .45rem;
+      border-radius: 4px;
+      font-size: .75rem;
+    }
+    .article-content h2 {
+      margin-top: 2rem;
+      margin-bottom: .75rem;
+      font-size: 1.35rem;
+    }
+    .article-content h3 {
+      margin-top: 1.5rem;
+      margin-bottom: .5rem;
+      font-size: 1.05rem;
+    }
+    .article-content blockquote {
+      margin: 1.25rem 0;
+      padding: .85rem 1rem;
+      border-left: 4px solid var(--color-accent);
+      background: var(--color-bg-soft);
+      border-radius: 0 8px 8px 0;
+      font-size: .9rem;
+      color: var(--color-text-light);
+    }
+    .article-footer {
+      margin-top: 2.5rem;
+      font-size: .75rem;
+      color: var(--color-text-light);
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .share {
+      display: flex;
+      gap: .5rem;
+    }
+    .share button {
+      border: 1px solid var(--color-border);
+      background: var(--color-bg-soft);
+      color: var(--color-text-light);
+      padding: .4rem .65rem;
+      font-size: .65rem;
+      letter-spacing: .5px;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background var(--transition), color var(--transition), border-color var(--transition);
+    }
+    .share button:hover {
+      background: var(--color-accent);
+      color: #fff;
+      border-color: var(--color-accent);
+    }
+    /* 滚动条 */
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--color-bg-soft);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(var(--color-bg-soft), var(--color-accent));
+      border-radius: 20px;
+      border: 2px solid var(--color-bg-soft);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(var(--color-accent), var(--color-accent-hover));
+    }
+    /* 动画 */
+    [data-fade] {
+      opacity: 0;
+      transform: translateY(12px);
+      animation: fadeUp .6s forwards;
+    }
+    [data-fade][data-delay="1"] { animation-delay: .05s; }
+    [data-fade][data-delay="2"] { animation-delay: .1s; }
+    [data-fade][data-delay="3"] { animation-delay: .15s; }
+    [data-fade][data-delay="4"] { animation-delay: .2s; }
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .logo-circle {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg,var(--color-accent),var(--color-accent-hover));
+      display: grid;
+      place-items: center;
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .5px;
+      color: #fff;
+      box-shadow: 0 4px 16px -4px rgba(0,0,0,.35);
+    }
+    .float-add {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 54px;
+      height: 54px;
+      border-radius: 16px;
+      background: var(--color-accent);
+      color: #fff;
+      font-size: 1.85rem;
+      border: none;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 12px 30px -8px rgba(0,0,0,.35);
+      transition: transform var(--transition), background var(--transition);
+      z-index: 60;
+    }
+    .float-add:hover {
+      background: var(--color-accent-hover);
+      transform: translateY(-4px) rotate(90deg);
+    }
+    @media (max-width: 560px) {
+      .float-add {
+        bottom: 16px;
+        right: 16px;
+        width: 50px;
+        height: 50px;
+        border-radius: 14px;
+        font-size: 1.55rem;
+      }
+    }
+    .notice-dev {
+      position: fixed;
+      top: 86px;
+      right: 16px;
+      background: var(--color-bg);
+      color: var(--color-text-light);
+      font-size: .6rem;
+      padding: .5rem .65rem;
+      border: 1px dashed var(--color-border);
+      border-radius: 8px;
+      display: flex;
+      gap: .35rem;
+      letter-spacing: .5px;
+      z-index: 45;
+      opacity: .85;
+    }
+    @media (max-width: 960px) {
+      .notice-dev { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo-circle">ME</div>
+        <span>我的个人博客</span>
+      </div>
+      <nav>
+        <a href="#" class="active" data-nav="home">首页</a>
+        <a href="#" data-nav="archives">归档</a>
+        <a href="#" data-nav="tags">标签</a>
+        <a href="#" data-nav="about">关于</a>
+        <button class="theme-toggle" id="themeToggle" aria-label="切换主题">🌙 深色</button>
+      </nav>
+    </div>
+  </header>
+
+  <div class="notice-dev">演示版：数据来源于前端 JSON，部署时请替换为真实后端或静态文件</div>
+
+  <main>
+    <section>
+      <div class="search-bar" data-fade data-delay="1">
+        <input type="text" id="searchInput" placeholder="搜索文章标题 / 摘要 / 标签 ..." autocomplete="off" />
+        <div class="tags-filter" id="tagsFilter"></div>
+      </div>
+      <div class="posts" id="postsContainer" data-fade data-delay="2"></div>
+      <div class="pagination" id="pagination"></div>
+    </section>
+    <aside class="sidebar">
+      <div class="card about" data-fade data-delay="1">
+        <h3>关于我</h3>
+          <p>👋 一名前端 / 全栈爱好者，记录学习、产品思考、效率方式与杂感。</p>
+          <p>目标：打造一个高质、长期主义的知识花园。</p>
+      </div>
+      <div class="card" data-fade data-delay="2">
+        <h3>最近更新</h3>
+        <ul id="recentList"></ul>
+      </div>
+      <div class="card" data-fade data-delay="3">
+        <h3>标签云</h3>
+        <div class="tag-cloud" id="tagCloud"></div>
+      </div>
+      <div class="card" data-fade data-delay="4">
+        <h3>订阅</h3>
+        <p>未来可接入 RSS / Email / WebSub 等。</p>
+        <p>当前：纯静态模板。</p>
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    <div class="inner">
+      <div>
+        <h4>站点</h4>
+        <ul>
+          <li><a href="#">首页</a></li>
+          <li><a href="#">归档</a></li>
+          <li><a href="#">标签</a></li>
+          <li><a href="#">关于</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>资源</h4>
+        <ul>
+          <li><a href="#">前端笔记</a></li>
+          <li><a href="#">学习路线</a></li>
+          <li><a href="#">开源项目</a></li>
+          <li><a href="#">工具清单</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>社交</h4>
+        <ul>
+          <li><a href="#">GitHub</a></li>
+          <li><a href="#">掘金</a></li>
+          <li><a href="#">知乎</a></li>
+          <li><a href="#">Twitter</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>版权</h4>
+        <ul>
+          <li><a href="#">使用说明</a></li>
+          <li><a href="#">隐私策略</a></li>
+          <li><a href="#">开源许可</a></li>
+          <li><a href="#">联系作者</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="copyright">© <span id="year"></span> 我的个人博客 · 保留所有权利 · 基于静态模板</div>
+  </footer>
+
+  <button class="float-add" title="快速创建文章 (示例功能)" id="quickCreate">+</button>
+
+  <!-- 文章阅读 Overlay -->
+  <div class="article-overlay" id="articleOverlay" aria-modal="true" role="dialog">
+    <div class="article-container" id="articleContainer">
+      <button class="close-article" id="closeArticle" aria-label="关闭文章">✕</button>
+      <article id="articleContent">
+        <!-- 动态注入 -->
+      </article>
+    </div>
+  </div>
+
+  <script>
+    // 模拟文章数据（生产环境可替换为后端 API 或静态 JSON）
+    const postsData = [
+      {
+        id: 1,
+        title: "打造个人知识库的 7 个关键设计原则",
+        date: "2025-08-01",
+          tags: ["知识管理","效率","PKM"],
+        excerpt: "个人知识库不仅是笔记堆积，而是一个高价值信息的结构化演化系统。本文总结我在实践中沉淀的 7 个设计原则……",
+        content: `
+          <p>要让知识库成为一个“增长型资产”，需要在结构、输入、评估、再利用等维度进行精心设计。</p>
+          <h2>1. 原子化</h2>
+          <p>保持笔记粒度足够小，使其可复用、可重组。避免“大而全”的长篇巨物难以维护。</p>
+          <h2>2. 语义化命名</h2>
+          <p>命名应该描述“内容作用 + 使用场景”，如：<code>决策-技术选型-前端状态管理</code>。</p>
+          <h2>3. 多维分类</h2>
+          <p>不要依赖单一层级目录；使用标签 / 主题 / 阶段等复合检索路径。</p>
+          <blockquote>知识管理 ≠ 收藏管理；关键在于加工（加工=结构化+连接+再生产）。</blockquote>
+          <h2>4. 连接优先</h2>
+          <p>输出的价值来自跨主题的“桥”，刻意训练联想与引用。</p>
+          <pre><code>// 笔记评估清单 (示例)
+- 是否可复用？
+- 是否含抽象模型？
+- 是否带来源链接？
+- 是否与既有节点建立连接？</code></pre>
+          <h2>5. 生命周期</h2>
+          <p>笔记应当有状态：Inbox → 处理中 → 已结构化 → 已发布 / 归档。</p>
+          <h2>6. 输出驱动</h2>
+          <p>一切输入都应该指向未来的输出形态（文章 / 课程 / 工具 / 决策）。</p>
+          <h2>7. 优雅退化</h2>
+          <p>系统应在“最低维护投入”情况下仍然可用。</p>
+          <p>下一步我将分享如何用 Git + Markdown + 自动化脚本打造低摩擦知识工作流。</p>
+        `
+      },
+      {
+        id: 2,
+        title: "前端性能优化：直击 9 个高影响力指标",
+        date: "2025-07-26",
+        tags: ["前端","性能","Web"],
+        excerpt: "性能是用户体验的第一感知。本文聚焦 9 个最能提升真实体验的关键指标，并提供执行清单。",
+        content: `
+          <p>核心指标来自浏览器可观测性 + RUM 实践，如 FCP / LCP / CLS / INP / TTFB 等。</p>
+          <h2>1. 关键渲染路径裁剪</h2>
+          <p>减少 <code>&lt;head&gt;</code> 中阻塞资源；使用 <code>preload</code> / <code>async</code> / <code>defer</code>。</p>
+          <h2>2. 图片策略</h2>
+          <p>WebP / AVIF，自适应尺寸，懒加载，避免无意义装饰图。</p>
+          <h2>3. 代码拆分</h2>
+          <p>按路由/组件动态加载，减少首屏 JS 解析与执行时间。</p>
+          <h2>4. 资源缓存</h2>
+          <p>HTTP 缓存策略 + Service Worker 离线能力。</p>
+          <pre><code>// nginx 响应头示例
+location /static/ {
+    add_header Cache-Control "public, max-age=31536000, immutable";
+}</code></pre>
+          <h2>5. 字体优化</h2>
+          <p>使用可变字体 / 子集化 / font-display: swap。</p>
+          <h2>6. 减少布局抖动</h2>
+          <p>预留尺寸，避免图片/广告位导致 CLS。</p>
+          <h2>7. 交互延迟</h2>
+          <p>INP 优化：切碎长任务、使用 requestIdleCallback、虚拟列表。</p>
+          <h2>8. 监控回路</h2>
+          <p>建立性能预算 + CI 检查 + RUM 上报。</p>
+          <h2>9. 成本考量</h2>
+          <p>性能优化要与“团队复杂度预算”平衡。</p>
+        `
+      },
+      {
+        id: 3,
+        title: "从 0 设计你的 Side Project 骨架",
+        date: "2025-07-21",
+        tags: ["产品","副业项目","架构"],
+        excerpt: "一个成功的 Side Project 需要前置的边界设定、技术裁剪、迭代策略与冷启动预案。",
+        content: `
+          <p>Side Project 失败多数不是因为技术，而是缺少“约束 + 节奏”。</p>
+          <h2>核心四象限</h2>
+          <p>价值假设 / 用户路径 / 技术最小集 / 增长通道。</p>
+          <h2>技术裁剪</h2>
+          <p>只选你 80% 熟悉且部署链路最短的栈。</p>
+          <pre><code>// MVP 技术决策例
+Web: Next.js + Tailwind + SQLite
+Auth: Clerk / 自建 JWT
+Deploy: Vercel
+Monitor: Sentry + Umami</code></pre>
+          <h2>节奏设计</h2>
+          <p>采用 2 周冲刺：验证核心 → 收集反馈 → 调整定位。</p>
+        `
+      },
+      {
+        id: 4,
+        title: "用 GitHub Actions 自动化你的静态博客部署",
+        date: "2025-07-15",
+        tags: ["DevOps","自动化","CI/CD"],
+        excerpt: "一步步配置自动化流水线，实现推送即发布、版本可追溯、构建可观察。",
+        content: `
+          <p>CI/CD 让个人博客具备“工程级可持续性”。</p>
+          <h2>基础工作流</h2>
+          <pre><code>name: Deploy Blog
+on:
+  push:
+    branches: [ main ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run build
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          publish_dir: ./dist</code></pre>
+          <h2>缓存优化</h2>
+          <p>用 actions/cache 复用依赖。</p>
+        `
+      },
+      {
+        id: 5,
+        title: "设计系统的 Token 分层策略",
+        date: "2025-07-09",
+        tags: ["设计系统","UI","前端"],
+        excerpt: "Token 层次良好，才能支持多主题、多品牌与长周期演化。本文拆解基础 → 语义 → 组件映射。",
+        content: `
+          <p>基础 Token 不直接落地 UI；语义 Token 抽象意图；组件 Token 映射具体实现。</p>
+          <h2>层次结构</h2>
+          <pre><code>base: 颜色/间距/字体/阴影
+semantic: primary-bg / success-fg / focus-ring
+component: button-primary-bg / card-border</code></pre>
+          <h2>多主题策略</h2>
+          <p>仅替换 base + semantic，不动组件层。</p>
+        `
+      },
+      {
+        id: 6,
+        title: "如何评估一个技术决策的真实成本",
+        date: "2025-07-02",
+        tags: ["架构","思考","技术管理"],
+        excerpt: "技术选型 ≠ 技术喜好。需要将短期交付 / 长期维护 / 风险敞口 / 机会成本一起量化。",
+        content: `
+          <p>建立一个评估矩阵，将主观偏好转化为结构化输入。</p>
+          <h2>指标</h2>
+          <ul>
+            <li>学习曲线</li>
+            <li>社区活跃</li>
+            <li>生态成熟</li>
+            <li>迁移路径</li>
+            <li>可观察性支持</li>
+          </ul>
+        `
+      },
+      {
+        id: 7,
+        title: "用最小约束写高质量日志（Debug 资产化）",
+        date: "2025-06-28",
+        tags: ["工程实践","调试","可观察性"],
+        excerpt: "日志不是“输出字符串”，而是问题复现与推理链压缩的载体。如何让日志变得结构化、高价值？",
+        content: `
+          <p>核心原则：结构化 + 可关联 + 低噪音 + 可度量。</p>
+          <h2>日志级别策略</h2>
+          <p>明确何时进入 error / warn / info / debug。</p>
+          <h2>字段设计</h2>
+          <p>请求 ID、用户 ID、Trace ID、耗时、结果状态。</p>
+        `
+      },
+      {
+        id: 8,
+        title: "提高输入质量：信息摄取的 5 条过滤规范",
+        date: "2025-06-20",
+        tags: ["学习方法","效率","思考"],
+        excerpt: "信息过载时代，决定价值的不再是“获取”，而是“筛选 + 加工路径”。这是我实践有效的信息过滤标准。",
+        content: `
+          <p>五条规范：源头可信 / 主题相关 / 深度足够 / 可验证 / 可沉淀。</p>
+          <h2>反例识别</h2>
+          <p>二手拼接、标题党、情绪化煽动、缺少数据。</p>
+        `
+      },
+      {
+        id: 9,
+        title: "前端错误监控体系搭建速记",
+        date: "2025-06-12",
+        tags: ["前端","监控","可观察性"],
+        excerpt: "从 window.onerror 到 Sentry 的全链路策略，包括采集、清洗、聚合、告警与回溯。",
+        content: `
+          <p>建立可闭环：采集 → 降噪 → 归并 → 追踪 → 修复 → 验证。</p>
+          <h2>降噪</h2>
+          <p>过滤第三方脚本、网络波动、用户扩展。</p>
+        `
+      },
+      {
+        id: 10,
+        title: "打造个人命令行工具：从脚手架到发布",
+        date: "2025-06-05",
+        tags: ["工具开发","Node.js","CLI"],
+        excerpt: "使用 Node.js + Commander + ESM 打包，构建你的自动化 CLI 工具并发布到 npm。",
+        content: `
+          <p>CLI 让重复性操作结构化。</p>
+          <h2>初始化</h2>
+          <pre><code>npm init -y
+npm install commander</code></pre>
+          <h2>发布</h2>
+          <p>配置 bin 字段，语义化版本。</p>
+        `
+      }
+    ];
+
+    const state = {
+      page: 1,
+      pageSize: 6,
+      tag: null,
+      keyword: "",
+    };
+
+    const $ = sel => document.querySelector(sel);
+    const $$ = sel => document.querySelectorAll(sel);
+
+    const postsContainer = $("#postsContainer");
+    const paginationEl = $("#pagination");
+    const searchInput = $("#searchInput");
+    const tagsFilter = $("#tagsFilter");
+    const recentList = $("#recentList");
+    const tagCloud = $("#tagCloud");
+    const yearEl = $("#year");
+    const overlay = $("#articleOverlay");
+    const articleContent = $("#articleContent");
+    const closeArticle = $("#closeArticle");
+    const quickCreate = $("#quickCreate");
+    const themeToggle = $("#themeToggle");
+
+    yearEl.textContent = new Date().getFullYear();
+
+    function uniqueTags() {
+      const set = new Set();
+      postsData.forEach(p => p.tags.forEach(t => set.add(t)));
+      return [...set].sort();
+    }
+
+    function formatDate(dateStr) {
+      const d = new Date(dateStr);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+    }
+
+    function filterPosts() {
+      return postsData.filter(p => {
+        const byTag = state.tag ? p.tags.includes(state.tag) : true;
+        const q = state.keyword.trim().toLowerCase();
+        const byKeyword = q
+          ? (p.title + p.excerpt + p.tags.join(" ") + p.content.replace(/<[^>]+>/g,""))
+              .toLowerCase()
+              .includes(q)
+          : true;
+        return byTag && byKeyword;
+      }).sort((a,b)=> new Date(b.date) - new Date(a.date));
+    }
+
+    function paginate(list) {
+      const start = (state.page - 1) * state.pageSize;
+      return list.slice(start, start + state.pageSize);
+    }
+
+    function renderPosts() {
+      const filtered = filterPosts();
+      const total = filtered.length;
+      if (!total) {
+        postsContainer.innerHTML = `<div class="empty">未找到匹配的文章。</div>`;
+        paginationEl.innerHTML = "";
+        return;
+      }
+      const pageCount = Math.ceil(total / state.pageSize);
+      if (state.page > pageCount) {
+        state.page = 1;
+      }
+      const current = paginate(filtered);
+      postsContainer.innerHTML = current.map(post => `
+        <div class="post-card" data-id="${post.id}">
+          <div class="post-date">${formatDate(post.date)}</div>
+          <h2>${post.title}</h2>
+          <p class="post-excerpt">${post.excerpt}</p>
+          <div class="post-tags">
+            ${post.tags.map(t => `<span class="post-tag">${t}</span>`).join("")}
+          </div>
+          <a href="#read-${post.id}" class="read-more" data-read="${post.id}" aria-label="阅读《${post.title}》">
+            阅读 →
+          </a>
+        </div>
+      `).join("");
+
+      paginationEl.innerHTML = renderPagination(pageCount);
+    }
+
+    function renderPagination(pageCount) {
+      const btns = [];
+      const createBtn = (p, label = p) => `
+        <button ${p === state.page ? 'class="active"' : ""} data-page="${p}">${label}</button>
+      `;
+      if (pageCount <= 1) return "";
+
+      // 上一页
+      btns.push(`<button data-page="prev" ${state.page === 1 ? "disabled" : ""}>‹</button>`);
+
+      const pages = [];
+      for (let i=1;i<=pageCount;i++) pages.push(i);
+
+      const windowSize = 5;
+      let start = Math.max(1, state.page - Math.floor(windowSize/2));
+      let end = start + windowSize - 1;
+      if (end > pageCount) {
+        end = pageCount;
+        start = Math.max(1, end - windowSize + 1);
+      }
+
+      if (start > 1) {
+        btns.push(createBtn(1));
+        if (start > 2) btns.push(`<button disabled>…</button>`);
+      }
+
+      for (let p = start; p <= end; p++) {
+        btns.push(createBtn(p));
+      }
+
+      if (end < pageCount) {
+        if (end < pageCount - 1) btns.push(`<button disabled>…</button>`);
+        btns.push(createBtn(pageCount));
+      }
+
+      // 下一页
+      btns.push(`<button data-page="next" ${state.page === pageCount ? "disabled" : ""}>›</button>`);
+
+      return btns.join("");
+    }
+
+    function renderTagFilter() {
+      const tags = uniqueTags();
+      tagsFilter.innerHTML = `
+        <div class="tag-chip ${!state.tag ? 'active':''}" data-tag="">全部</div>
+        ${tags.map(t => `<div class="tag-chip ${state.tag===t?'active':''}" data-tag="${t}">${t}</div>`).join("")}
+      `;
+    }
+
+    function renderRecent() {
+      const latest = [...postsData]
+        .sort((a,b)=> new Date(b.date) - new Date(a.date))
+        .slice(0,5);
+      recentList.innerHTML = latest.map(p => `
+        <li><a href="#read-${p.id}" data-read="${p.id}" style="font-size:.75rem;">${p.title}</a></li>
+      `).join("");
+    }
+
+    function renderTagCloud() {
+      const tags = uniqueTags();
+      tagCloud.innerHTML = tags.map(t => `
+        <a href="#tag-${encodeURIComponent(t)}" data-cloud-tag="${t}">${t}</a>
+      `).join("");
+    }
+
+    function openArticle(id) {
+      const post = postsData.find(p => p.id === Number(id));
+      if (!post) return;
+      articleContent.innerHTML = `
+        <div class="article-meta">
+          <span>日期：${formatDate(post.date)}</span>
+          <span>标签：${post.tags.join(" / ")}</span>
+          <span>ID：${post.id}</span>
+        </div>
+        <h1>${post.title}</h1>
+        <div class="article-content">${post.content}</div>
+        <div class="article-footer">
+          <div>© 本文基于 CC BY-NC-SA 协议（示例）</div>
+          <div class="share">
+            <button data-share="copy">复制链接</button>
+            <button data-share="twitter">Twitter</button>
+            <button data-share="weibo">微博</button>
+          </div>
+        </div>
+      `;
+      overlay.style.display = "block";
+      document.body.style.overflow = "hidden";
+      history.replaceState(null,"",`#article-${post.id}`);
+    }
+
+    function closeArticleView() {
+      overlay.style.display = "none";
+      document.body.style.overflow = "";
+      history.replaceState(null,"", location.pathname);
+    }
+
+    // 事件绑定
+    searchInput.addEventListener("input", e => {
+      state.keyword = e.target.value;
+      state.page = 1;
+      renderPosts();
+    });
+
+    tagsFilter.addEventListener("click", e => {
+      const tag = e.target.closest(".tag-chip")?.dataset.tag;
+      if (tag !== undefined) {
+        state.tag = tag || null;
+        state.page = 1;
+        renderTagFilter();
+        renderPosts();
+      }
+    });
+
+    paginationEl.addEventListener("click", e => {
+      const btn = e.target.closest("button");
+      if (!btn || btn.disabled) return;
+      const val = btn.dataset.page;
+      const filtered = filterPosts();
+      const pageCount = Math.ceil(filtered.length / state.pageSize);
+      if (val === "prev") {
+        state.page = Math.max(1, state.page - 1);
+      } else if (val === "next") {
+        state.page = Math.min(pageCount, state.page + 1);
+      } else {
+        state.page = Number(val);
+      }
+      renderPosts();
+      window.scrollTo({top:0,behavior:"smooth"});
+    });
+
+    document.addEventListener("click", e => {
+      const read = e.target.closest("[data-read]");
+      if (read) {
+        e.preventDefault();
+          openArticle(read.dataset.read);
+      }
+      // Tag Cloud 点击
+      const cloudTag = e.target.closest("[data-cloud-tag]");
+      if (cloudTag) {
+        state.tag = cloudTag.dataset.cloudTag;
+        state.page = 1;
+        renderTagFilter();
+        renderPosts();
+        window.scrollTo({top:0,behavior:"smooth"});
+        e.preventDefault();
+      }
+      // 文章分享
+      const shareBtn = e.target.closest("[data-share]");
+      if (shareBtn) {
+        const type = shareBtn.dataset.share;
+        const url = location.origin + location.pathname + location.hash;
+        if (type === "copy") {
+          navigator.clipboard.writeText(url).then(()=>{
+            shareBtn.textContent = "已复制";
+            setTimeout(()=> shareBtn.textContent = "复制链接", 1600);
+          });
+        } else if (type === "twitter") {
+          window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(document.title)}&url=${encodeURIComponent(url)}`);
+        } else if (type === "weibo") {
+          window.open(`https://service.weibo.com/share/share.php?title=${encodeURIComponent(document.title)}&url=${encodeURIComponent(url)}`);
+        }
+      }
+    });
+
+    closeArticle.addEventListener("click", closeArticleView);
+    overlay.addEventListener("click", e => {
+      if (e.target === overlay) closeArticleView();
+    });
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape" && overlay.style.display === "block") {
+        closeArticleView();
+      }
+    });
+
+    // 快速创建（演示）—— 仅模拟添加数据
+    quickCreate.addEventListener("click", () => {
+      const id = postsData.length + 1;
+      const now = new Date();
+      const date = now.toISOString().slice(0,10);
+      const post = {
+        id,
+        title: "新文章草稿 #" + id,
+        date,
+        tags: ["草稿","临时"],
+        excerpt: "这是一篇演示添加的临时草稿文章，你可以在这里扩展后端接入逻辑。",
+        content: "<p>这里是用于演示的草稿内容。你可以集成后端保存草稿逻辑。</p>"
+      };
+      postsData.unshift(post);
+      state.page = 1;
+      renderTagFilter();
+      renderPosts();
+      renderRecent();
+      renderTagCloud();
+      openArticle(post.id);
+    });
+
+    // 主题切换
+    function applyTheme(theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      const dark = theme === "dark";
+      themeToggle.textContent = dark ? "☀️ 浅色" : "🌙 深色";
+      localStorage.setItem("theme", theme);
+    }
+    themeToggle.addEventListener("click", () => {
+      const current = document.documentElement.getAttribute("data-theme");
+      applyTheme(current === "dark" ? "light" : "dark");
+    });
+
+    (function initTheme(){
+      const saved = localStorage.getItem("theme");
+      if (saved) applyTheme(saved);
+      else {
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        applyTheme(prefersDark ? "dark" : "light");
+      }
+    })();
+
+    function initFromHash() {
+      const hash = location.hash;
+      if (hash.startsWith("#article-")) {
+        const id = hash.split("-")[1];
+        openArticle(id);
+      } else if (hash.startsWith("#tag-")) {
+        const t = decodeURIComponent(hash.slice(5));
+        state.tag = t;
+      }
+    }
+
+    // 初始化
+    function init() {
+      initFromHash();
+      renderTagFilter();
+      renderPosts();
+      renderRecent();
+      renderTagCloud();
+    }
+    init();
+  </script>
+</body>
+</html>
+
+
+
